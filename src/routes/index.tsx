@@ -3,17 +3,27 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CollectionSlider } from "@/components/CollectionSlider";
 import logo from "@/assets/iron-logo.svg";
-import hero from "@/assets/hero.jpg";
-import c1a from "@/assets/c1-a.jpg";
-import c1b from "@/assets/c1-b.jpg";
-import c2a from "@/assets/c2-a.jpg";
-import c2b from "@/assets/c2-b.jpg";
-import c3a from "@/assets/c3-a.jpg";
-import c3b from "@/assets/c3-b.jpg";
-import c4a from "@/assets/c4-a.jpg";
-import c4b from "@/assets/c4-b.jpg";
-import c5a from "@/assets/c5-a.jpg";
-import c5b from "@/assets/c5-b.jpg";
+import hero from "@/assets/hero.png";
+
+import maldivasSet from "@/assets/maldivas/sofa set.png";
+import maldivasSide from "@/assets/maldivas/sofa costado.png";
+import maldivasBack from "@/assets/maldivas/sofa costado atras.png";
+import maldivasAngle from "@/assets/maldivas/sofa costadoatras 2.png";
+
+import marsellaPortada from "@/assets/marsella/portada.png";
+import marsellaSceneOne from "@/assets/marsella/AnyConv.com__1.png";
+import marsellaSceneTwo from "@/assets/marsella/AnyConv.com__2.png";
+import marsellaDetail from "@/assets/marsella/AnyConv.com__3.png";
+
+import pierrePortada from "@/assets/pierre/portada.jpg";
+import pierreSofaDetail from "@/assets/pierre/dna-2-seat-sofa-detail.jpg";
+import pierreSectional from "@/assets/pierre/dna-sectional-1-product-header-4.jpg";
+import pierreGallery from "@/assets/pierre/dna-3-seat-sofa-product-header-2.jpg";
+
+import belleyPortada from "@/assets/Belleydoux/portada.jpg";
+import belleyLounge from "@/assets/Belleydoux/Roshults_Outdoor-Furniture_6049-LowRes_page-0001.jpg";
+import belleyPavilion from "@/assets/Belleydoux/Roshults_Outdoor-Furniture_8301-LorRes_page-0001.jpg";
+import belleyNight from "@/assets/Belleydoux/Untitled design (13).png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,52 +47,46 @@ export const Route = createFileRoute("/")({
 const collections = [
   {
     index: "I",
-    title: "Mesa Noir",
-    subtitle:
-      "Bases de hierro forjado y tapas de mármol calacatta. Mesas que sostienen ceremonias.",
+    title: "Maldivas",
+    subtitle: "Livings modulares en aluminio anodizado con tapizado náutico resistente al sol.",
     images: [
-      { src: c1a, alt: "Mesa Noir con base de hierro y tapa de mármol" },
-      { src: c1b, alt: "Banco de hierro con asiento de cuero" },
+      { src: maldivasSet, alt: "Set Maldivas en composición" },
+      { src: maldivasSide, alt: "Vista lateral del módulo Maldivas" },
+      { src: maldivasBack, alt: "Respaldo escultórico Maldivas" },
+      { src: maldivasAngle, alt: "Detalles curvos Maldivas" },
     ],
   },
   {
     index: "II",
-    title: "Sillón Estructura",
-    subtitle:
-      "Geometrías escultóricas en hierro negro. Asientos para detenerse y observar.",
+    title: "Marsella",
+    subtitle: "Comedores mediterráneos en aluminio cepillado con tapizados náuticos hidrófugos.",
     images: [
-      { src: c2a, alt: "Sillón escultórico de hierro" },
-      { src: c2b, alt: "Par de sillones de hierro con velvet" },
+      { src: marsellaPortada, alt: "Ambiente principal colección Marsella" },
+      { src: marsellaSceneOne, alt: "Detalle de mesa Marsella" },
+      { src: marsellaSceneTwo, alt: "Vista lateral Marsella" },
+      { src: marsellaDetail, alt: "Acabados Marsella" },
     ],
   },
   {
     index: "III",
-    title: "Alcoba",
-    subtitle:
-      "Camas con dosel y mesas de luz. La intimidad como obra arquitectónica.",
+    title: "Pierre",
+    subtitle: "Sofás ADN en aluminio grafito combinados con textiles náuticos de alto desempeño.",
     images: [
-      { src: c3a, alt: "Cama con dosel de hierro forjado" },
-      { src: c3b, alt: "Mesa de luz con tapa de mármol" },
+      { src: pierrePortada, alt: "Portada colección Pierre" },
+      { src: pierreSofaDetail, alt: "Detalle tapicería Pierre" },
+      { src: pierreSectional, alt: "Seccional Pierre" },
+      { src: pierreGallery, alt: "Variaciones Pierre" },
     ],
   },
   {
     index: "IV",
-    title: "Luminaria",
-    subtitle:
-      "Lámparas y arañas. El hierro como vehículo de la luz.",
+    title: "Belleydoux",
+    subtitle: "Exterior gastronómico totalmente en aluminio marino y tapicería náutica antimanchas.",
     images: [
-      { src: c4a, alt: "Lámpara escultórica de hierro" },
-      { src: c4b, alt: "Araña de hierro con cristales" },
-    ],
-  },
-  {
-    index: "V",
-    title: "Jardín",
-    subtitle:
-      "Piezas de exterior. Hierro tratado para resistir el paso del tiempo.",
-    images: [
-      { src: c5a, alt: "Banco de jardín de hierro" },
-      { src: c5b, alt: "Pérgola de hierro forjado" },
+      { src: belleyPortada, alt: "Portada colección Belleydoux" },
+      { src: belleyLounge, alt: "Lounge Belleydoux" },
+      { src: belleyPavilion, alt: "Pabellón Belleydoux" },
+      { src: belleyNight, alt: "Set nocturno Belleydoux" },
     ],
   },
 ];
@@ -101,7 +105,8 @@ function Home() {
           height={1080}
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
+        <div className="absolute inset-0 bg-black/55 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/35 to-background" />
         <div className="absolute inset-0 vignette" />
         <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
           <img
@@ -134,7 +139,7 @@ function Home() {
           Cinco Colecciones
         </p>
         <h2 className="font-display text-3xl md:text-5xl max-w-3xl mx-auto text-balance">
-          Una obra dividida en cinco capítulos
+          Una obra, varios capítulos
         </h2>
       </section>
 

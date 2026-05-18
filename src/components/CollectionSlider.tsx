@@ -42,7 +42,7 @@ export function CollectionSlider({ index, title, subtitle, images }: Props) {
         </div>
       </div>
 
-      <div className="relative w-full aspect-[21/9] overflow-hidden bg-card">
+      <div className="relative w-full bg-card overflow-hidden aspect-[4/3] md:aspect-[3/2]">
         {images.map((img, idx) => (
           <img
             key={idx}
@@ -51,7 +51,7 @@ export function CollectionSlider({ index, title, subtitle, images }: Props) {
             width={1920}
             height={1080}
             loading="lazy"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+            className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-1000 ${
               idx === i ? "opacity-100" : "opacity-0"
             }`}
           />

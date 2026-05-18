@@ -1,13 +1,11 @@
-import { createServer } from "http";
-import { readFileSync, existsSync } from "fs";
-import { resolve, extname } from "path";
-import { fileURLToPath } from "url";
+const http = require("http");
+const fs = require("fs");
+const path = require("path");
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const PORT = process.env.PORT || 3000;
-const DIST_DIR = resolve(__dirname, "../dist/client");
+const DIST_DIR = path.resolve(__dirname, "dist/client");
 
-const MIME_TYPES: Record<string, string> = {
+const MIME_TYPES = {
   ".html": "text/html",
   ".js": "application/javascript",
   ".css": "text/css",
@@ -24,10 +22,10 @@ const MIME_TYPES: Record<string, string> = {
   ".ttf": "font/ttf",
 };
 
-function serveStaticFile(filePath: string, res: import("http").ServerResponse) {
+function serveStaticFile(filePath, res) {
   try {
-    const content = readFileSync(filePath);
-    const ext = extname(filePath).toLowerCase();
+    const content = fs.readFileSync(filePath);
+    const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || "application/octet-stream";
     res.writeHead(200, { "Content-Type": contentType });
     res.end(content);
@@ -37,15 +35,15 @@ function serveStaticFile(filePath: string, res: import("http").ServerResponse) {
   }
 }
 
-const server = createServer(async (req, res) => {
+const server = http.createServer(async (req, res) => {
   try {
     const url = req.url || "/";
     const pathname = new URL(url, `http://${req.headers.host}`).pathname;
 
     // Archivos estáticos
     if (pathname.startsWith("/assets/") || pathname.startsWith("/fonts/")) {
-      const filePath = resolve(DIST_DIR, pathname.slice(1));
-      if (existsSync(filePath)) {
+      const filePath = path.resolve(DIST_DIR, pathname.slice(1));
+      if (fs.existsSync(filePath)) {
         serveStaticFile(filePath, res);
         return;
       }
@@ -53,17 +51,17 @@ const server = createServer(async (req, res) => {
 
     // Favicon
     if (pathname === "/favicon.svg" || pathname === "/favicon.png") {
-      const filePath = resolve(DIST_DIR, pathname.slice(1));
-      if (existsSync(filePath)) {
+      const filePath = path.resolve(DIST_DIR, pathname.slice(1));
+      if (fs.existsSync(filePath)) {
         serveStaticFile(filePath, res);
         return;
       }
     }
 
     // SPA fallback: servir index.html para rutas no estáticas
-    const indexPath = resolve(DIST_DIR, "index.html");
-    if (existsSync(indexPath)) {
-      const html = readFileSync(indexPath, "utf-8");
+    const indexPath = path.resolve(DIST_DIR, "index.html");
+    if (fs.existsSync(indexPath)) {
+      const html = fs.readFileSync(indexPath, "utf-8");
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
       res.end(html);
     } else {
@@ -80,5 +78,3 @@ const server = createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-export default server;

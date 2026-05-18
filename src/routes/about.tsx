@@ -10,7 +10,7 @@ export const Route = createFileRoute("/about")({
       {
         name: "description",
         content:
-          "Conozca a ERIC ARRIOLA, fundador de Iron Furniture, y la visión que transformó acero y aluminio en diseño de autor.",
+          "Conozca a Eric, fundador de Iron Furniture, y la visión que transformó acero y aluminio en diseño de autor.",
       },
       { property: "og:title", content: "El Atelier — Iron Furniture" },
       {
@@ -41,7 +41,7 @@ function About() {
             <div className="aspect-[4/5] overflow-hidden bg-card">
               <img
                 src={founder}
-                alt="ERIC ARRIOLA, fundador de Iron Furniture"
+                alt="Eric, fundador de Iron Furniture"
                 width={1024}
                 height={1280}
                 loading="lazy"
@@ -63,7 +63,7 @@ function About() {
             <div className="gold-line w-16" />
             <div className="space-y-6 text-muted-foreground leading-relaxed">
               <p>
-                Desde humildes comienzos en 2019, ERIC ARRIOLA transformó una visión nacida entre
+                Desde humildes comienzos en 2019, Eric transformó una visión nacida entre
                 acero, aluminio y creatividad en Iron Furniture, una firma de diseño de
                 autor donde la materia prima se convierte en identidad.
               </p>

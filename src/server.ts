@@ -1,84 +1,80 @@
-import { createServer } from "http";
-import { readFileSync, existsSync } from "fs";
-import { resolve, extname } from "path";
-import { fileURLToPath } from "url";
+import "./lib/error-capture";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const PORT = process.env.PORT || 3000;
-const DIST_DIR = resolve(__dirname, "../dist/client");
+import { consumeLastCapturedError } from "./lib/error-capture";
+import { renderErrorPage } from "./lib/error-page";
 
-const MIME_TYPES: Record<string, string> = {
-  ".html": "text/html",
-  ".js": "application/javascript",
-  ".css": "text/css",
-  ".json": "application/json",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".gif": "image/gif",
-  ".svg": "image/svg+xml",
-  ".ico": "image/x-icon",
-  ".woff2": "font/woff2",
-  ".woff": "font/woff",
-  ".otf": "font/otf",
-  ".ttf": "font/ttf",
+type ServerEntry = {
+  fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
 };
 
-function serveStaticFile(filePath: string, res: import("http").ServerResponse) {
-  try {
-    const content = readFileSync(filePath);
-    const ext = extname(filePath).toLowerCase();
-    const contentType = MIME_TYPES[ext] || "application/octet-stream";
-    res.writeHead(200, { "Content-Type": contentType });
-    res.end(content);
-  } catch {
-    res.writeHead(404);
-    res.end("Not found");
+let serverEntryPromise: Promise<ServerEntry> | undefined;
+
+async function getServerEntry(): Promise<ServerEntry> {
+  if (!serverEntryPromise) {
+    serverEntryPromise = import("@tanstack/react-start/server-entry").then(
+      (m) => ((m as { default?: ServerEntry }).default ?? (m as unknown as ServerEntry)),
+    );
   }
+  return serverEntryPromise;
 }
 
-const server = createServer(async (req, res) => {
+function brandedErrorResponse(): Response {
+  return new Response(renderErrorPage(), {
+    status: 500,
+    headers: { "content-type": "text/html; charset=utf-8" },
+  });
+}
+
+function isCatastrophicSsrErrorBody(body: string, responseStatus: number): boolean {
+  let payload: unknown;
   try {
-    const url = req.url || "/";
-    const pathname = new URL(url, `http://${req.headers.host}`).pathname;
-
-    // Archivos estáticos
-    if (pathname.startsWith("/assets/") || pathname.startsWith("/fonts/")) {
-      const filePath = resolve(DIST_DIR, pathname.slice(1));
-      if (existsSync(filePath)) {
-        serveStaticFile(filePath, res);
-        return;
-      }
-    }
-
-    // Favicon
-    if (pathname === "/favicon.svg" || pathname === "/favicon.png") {
-      const filePath = resolve(DIST_DIR, pathname.slice(1));
-      if (existsSync(filePath)) {
-        serveStaticFile(filePath, res);
-        return;
-      }
-    }
-
-    // SPA fallback: servir index.html para rutas no estáticas
-    const indexPath = resolve(DIST_DIR, "index.html");
-    if (existsSync(indexPath)) {
-      const html = readFileSync(indexPath, "utf-8");
-      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
-      res.end(html);
-    } else {
-      res.writeHead(500);
-      res.end("Build not found. Run npm run build first.");
-    }
-  } catch (error) {
-    console.error(error);
-    res.writeHead(500);
-    res.end("Internal Server Error");
+    payload = JSON.parse(body);
+  } catch {
+    return false;
   }
-});
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  if (!payload || Array.isArray(payload) || typeof payload !== "object") {
+    return false;
+  }
 
-export default server;
+  const fields = payload as Record<string, unknown>;
+  const expectedKeys = new Set(["message", "status", "unhandled"]);
+  if (!Object.keys(fields).every((key) => expectedKeys.has(key))) {
+    return false;
+  }
+
+  return (
+    fields.unhandled === true &&
+    fields.message === "HTTPError" &&
+    (fields.status === undefined || fields.status === responseStatus)
+  );
+}
+
+// h3 swallows in-handler throws into a normal 500 Response with body
+// {"unhandled":true,"message":"HTTPError"} — try/catch alone never fires for those.
+async function normalizeCatastrophicSsrResponse(response: Response): Promise<Response> {
+  if (response.status < 500) return response;
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.includes("application/json")) return response;
+
+  const body = await response.clone().text();
+  if (!isCatastrophicSsrErrorBody(body, response.status)) {
+    return response;
+  }
+
+  console.error(consumeLastCapturedError() ?? new Error(`h3 swallowed SSR error: ${body}`));
+  return brandedErrorResponse();
+}
+
+export default {
+  async fetch(request: Request, env: unknown, ctx: unknown) {
+    try {
+      const handler = await getServerEntry();
+      const response = await handler.fetch(request, env, ctx);
+      return await normalizeCatastrophicSsrResponse(response);
+    } catch (error) {
+      console.error(error);
+      return brandedErrorResponse();
+    }
+  },
+};

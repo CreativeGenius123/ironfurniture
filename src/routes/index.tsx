@@ -5,10 +5,10 @@ import { CollectionSlider } from "@/components/CollectionSlider";
 import logo from "@/assets/iron-logo.svg";
 import hero from "@/assets/hero.png";
 
-import maldivasSet from "@/assets/maldivas/sofa set.png";
-import maldivasSide from "@/assets/maldivas/sofa costado.png";
-import maldivasBack from "@/assets/maldivas/sofa costado atras.png";
-import maldivasAngle from "@/assets/maldivas/sofa costadoatras 2.png";
+import maldivasSet from "@/assets/maldivas/sofa-set.png";
+import maldivasSide from "@/assets/maldivas/sofa-costado.png";
+import maldivasBack from "@/assets/maldivas/sofa-costado-atras.png";
+import maldivasAngle from "@/assets/maldivas/sofa-costadoatras-2.png";
 
 import marsellaPortada from "@/assets/marsella/portada.png";
 import marsellaSceneOne from "@/assets/marsella/AnyConv.com__1.png";
@@ -23,7 +23,7 @@ import pierreGallery from "@/assets/pierre/dna-3-seat-sofa-product-header-2.jpg"
 import belleyPortada from "@/assets/Belleydoux/portada.jpg";
 import belleyLounge from "@/assets/Belleydoux/Roshults_Outdoor-Furniture_6049-LowRes_page-0001.jpg";
 import belleyPavilion from "@/assets/Belleydoux/Roshults_Outdoor-Furniture_8301-LorRes_page-0001.jpg";
-import belleyNight from "@/assets/Belleydoux/Untitled design (13).png";
+import belleyNight from "@/assets/Belleydoux/belleydoux-night.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({

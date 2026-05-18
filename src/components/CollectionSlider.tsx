@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   index: string;
@@ -11,6 +11,13 @@ export function CollectionSlider({ index, title, subtitle, images }: Props) {
   const [i, setI] = useState(0);
   const next = () => setI((i + 1) % images.length);
   const prev = () => setI((i - 1 + images.length) % images.length);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setI((current) => (current + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [images.length]);
 
   return (
     <section className="relative">
